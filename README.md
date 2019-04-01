@@ -7,7 +7,7 @@ Instructions are available on http://escoffier.me/vertx-kubernetes
 
 Complete code is available in the `solution` directory.
 
-[![Build Status](https://travis-ci.org/cescoffier/vertx-kubernetes-workshop.svg?branch=master)](https://travis-ci.org/cescoffier/vertx-kubernetes-workshop)
+[![Build Status](https://travis-ci.org/jbossdemocentral/vertx-kubernetes-workshop.svg?branch=master)](https://travis-ci.org/jbossdemocentral/vertx-kubernetes-workshop)
 
 ## Teasing
 
