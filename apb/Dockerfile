@@ -52,6 +52,7 @@ cnZpY2VzCgogICAgICAK"
 
 
 COPY playbooks /opt/apb/actions
+RUN yum install -y python-pip && yum clean all && pip install jmespath
 ADD requirements.yml /opt/apb/actions/requirements.yml
 RUN ansible-galaxy install -r /opt/apb/actions/requirements.yml -f
 RUN chmod -R g=u /opt/{ansible,apb}
