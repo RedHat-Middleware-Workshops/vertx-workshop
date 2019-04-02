@@ -9,14 +9,15 @@
     openshift_master_url: 
     openshift_user_password:
     project_suffix: "-XX"
-    github_account: Jbossdemocentral
+    github_account: jbossdemocentral
     github_ref: master
     gogs_dev_user: developer
     gogs_pwd: openshift
     gogs_generate_user_format: user%02d  
     gogs_clone_addr: "https://github.com/jbossdemocentral/vertx-kubernetes-workshop.git"
     gogs_repo_name: "vertx-kubernetes-workshop"
-    gogs_user_count: 0
+    gogs_user_count: 10
+    che_generate_user_count: 10
     gogs_user_format: user%d
     infrasvcs_adm_user: adminuser
     infrasvcs_adm_pwd: adminpwd
@@ -121,27 +122,10 @@
       workshopper_name: guides
       project_name: "{{ namespace }}"
       workshopper_content_url_prefix: "https://raw.githubusercontent.com/{{ github_account }}/cloud-native-workshop-v2-guides/{{ github_ref }}"
-      workshopper_workshop_urls: "https://raw.githubusercontent.com/{{ github_account }}/cloud-native-workshop-v2-guides/{{ github_ref }}/_cloud-native-workshop.yml"
+      workshopper_workshop_urls: "https://raw.githubusercontent.com/{{ github_account }}/vertx-kubernetes-workshop/{{ github_ref }}/docs/workshopper-guides/_workshop-guides-che.yml"
       workshopper_env_vars:
         PROJECT_SUFFIX: "{{ project_suffix }}"
-        COOLSTORE_PROJECT: coolstore{{ project_suffix }}
-        OPENSHIFT_CONSOLE_URL: "{{ openshift_master_url }}"
-        ECLIPSE_CHE_URL: http://che-{{ namespace }}.{{ apps_hostname_suffix }}
-        GIT_URL: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}
-        NEXUS_URL: http://nexus-{{ namespace }}.{{ apps_hostname_suffix }}
-    tags: guides
-
-  - import_role:
-      name: openshift_workshopper
-      allow_duplicates: true
-    vars:
-      workshopper_name: guides-che
-      project_name: "{{ namespace }}"
-      workshopper_content_url_prefix: "https://raw.githubusercontent.com/{{ github_account }}/cloud-native-guides/{{ github_ref }}"
-      workshopper_workshop_urls: "https://raw.githubusercontent.com/{{ github_account }}/cloud-native-guides/{{ github_ref }}/_cloud-native-workshop-che.yml"
-      workshopper_env_vars:
-        PROJECT_SUFFIX: "{{ project_suffix }}"
-        COOLSTORE_PROJECT: coolstore{{ project_suffix }}
+        COOLSTORE_PROJECT: micro-trader-{{ project_suffix }}
         OPENSHIFT_CONSOLE_URL: "{{ openshift_master_url }}"
         ECLIPSE_CHE_URL: http://che-{{ namespace }}.{{ apps_hostname_suffix }}
         GIT_URL: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}

@@ -1,0 +1,30 @@
+config:
+    renderer: asciidoc
+
+modules:
+  1-preface:
+    name: Preface
+  1_1-prerequisites:
+    name: Prerequisites
+  2-vertx:
+    name: Getting started with Vert.x
+  3-microservices:
+    name: Demystifying microservices
+  4-kubernetes:
+    name: Gettings Started with Kubernetes
+  5-application:
+    name: The Micro-Trader Application
+  6-quote-generator:
+    name: The Quote Generator Service
+  7-portfolio:
+    name: The Portfolio Service
+  8-traders:
+    name: The compulsive traders
+  9-audit:
+    name: The Audit service
+  10-currency:
+    name: Resilience, Circuit Breaker and API Proxy
+  conclusion:
+    name: Conclusion  
+  references:
+    name: References

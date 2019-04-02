@@ -1,0 +1,560 @@
+== Eclipse Vert.x
+
+We will attempt to explain Vert.x in just a few lines. Remember we said in the previous section that Vert.x is _"a toolkit for building
+reactive applications on the JVM"_.
+
+=== Vert.x in 10 minutes
+
+There are a three important points in this description: **toolkit**, **reactive** and **on the JVM**.
+
+Firstly, Vert.x is a **toolkit**. This means that Vert.x is neither an application server, a container, nor a framework.
+Vert.x is a plain old `jar` file, so a Vert.x application is an application that uses this `jar`
+ file. Vert.x does not define a packaging model, all Vert.x _components_ are plain _boring_
+ `jar` files. How does this impact you and your application? Let's imagine you are using a build tool such as
+ Maven or Gradle. To make your application a Vert.x application just add the `vertx-core` dependency. Wanna use another
+ Vert.x component, just add it as a dependency. It's simple, burden-less. Starting the application is a simple class
+ with the `public static void main(String[] args)` entry point. There is no specific IDE or plugin to install to start using Vert.x.
+
+Therefore, to use the awesomeness provided by Vert.x, you just need to use it in your code. Be patient, how to do this will be
+covered later.
+
+Secondly, Vert.x is **reactive**. It is specifically made to build reactive
+applications, or more appropriately, **systems**. Reactive systems footnote:[Reactive systems and reactive programming are two
+different _things_. Reactive programming is a development model observing and manipulating data streams, while
+reactive systems are systems that react to requests, failures, load peaks and interact using async messages.] have
+been defined in the  http://reactivemanifesto.org[Reactive Manifesto]. While it's not a long document to read, we will further reduce it to these 4 bullet points:
+
+* Responsive: a reactive system needs to handle requests in a _reasonable_ time (I'll let you define _reasonable_).
+* Resilient: a reactive system must stay responsive in the face of _failures_ (crash, timeout, `500` errors...), so
+it must be _designed for failures_ and deal with them appropriately.
+* Elastic: a reactive system must stay responsive under various loads. As a consequence, it must scale up and down, and
+be able to handle the load with minimal resources.
+* Message driven: components from a reactive system interact using **asynchronous message-passing**.
+
+To help accomplish this, Vert.x is event-driven and non-blocking. Events are delivered in an
+_event loop_ that **must never be blocked**.
+
+image::event-loop.png[Vert.x Event Loop (simplified view),600]
+
+
+Let's explain why. Unlike traditional, let's say "enterprise", systems,
+Vert.x uses a very small number of threads. Some of these threads are _event loops_ which are responsible for
+dispatching the events in `Handlers`. If you block this thread, the events won't be delivered anymore.
+
+image::blocked-event-loop.png[Blocked Event Loop,600]
+
+This execution model impacts how you write your code, instead of the _traditional_ model of blocking code, your code is
+going to be asynchronous footnote:[Asynchronous: the caller does not wait for a returned response, but passes
+ a _callback_ which is executed when the result has been computed] and non-blocking footnote:[Non-blocking: the code
+  must not block the executing thread - so it must avoid blocking IO, long processing time etc.].
+
+As an example, if we wanted to retrieve a resource from a URL, we would do something like this:
+
+[source, java]
+----
+URL site = new URL("http://vertx.io/");
+BufferedReader in = new BufferedReader(new InputStreamReader(site.openStream()));
+
+String inputLine;
+while ((inputLine = in.readLine()) != null) {
+  System.out.println(inputLine);
+}
+in.close();
+----
+
+But with Vert.x we are more likely to do:
+
+[source, java]
+-----
+vertx.createHttpClient().getNow(80, "vertx.io", "", response -> {
+  response.bodyHandler(System.out::println);
+});
+-----
+
+The main differences between these 2 code samples are:
+
+* The first one is synchronous and potentially blocking : the instructions are executed in _order_, and may block the thread
+for a long time (because the web site may be slow or whatever).
+* The Vert.x one is asynchronous and non-blocking: the thread (event loop) is released while the connection with the
+HTTP server is established and is free to do something else. When the response has been received, the **same** event loop
+ calls the _callback_. Most of the Vert.x components are single-threaded (accessed only by a single thread), so no
+ concurrency burden anymore. By the way, with Vert.x, even the DNS resolution is asynchronous and non-blocking (while
+ Java DNS resolution is blocking).
+
+Finally, Vert.x applications run _"on the JVM"_,
+the Java Virtual Machine (8+). This means Vert.x
+applications can be developed using any language that runs on the JVM. Including Java (of course), Groovy, Ceylon, Ruby, JavaScript, Kotlin and Scala.
+We can even mix and match any combination of all these languages. The polyglot nature of a Vert.x application allows you use the most appropriate language for the task.
+
+Vert.x lets you implement distributed applications either by using the built-in TCP and HTTP server and client, or
+by using the Vert.x event bus, a lightweight mechanism to send and receive messages. With the event bus, you send
+messages to `addresses`. It supports three modes of distributions:
+
+1. _point to point_: the message is sent to a single _consumer_ listening on the address
+2. _publish / subscribe_: the message is received by all the _consumers_ listening on the address
+3. _request / reply_: the message is sent to a single _consumer_ and lets it _reply_ to the message by sending another
+_message_ to the initial sender
+
+Wow!, that's a lot of information to process ... However, you might still want to ask: **What kind of applications can I use Vert.x for? ** We say, Vert.x is
+incredibly flexible - whether it's simple network utilities, sophisticated modern web applications, HTTP/REST
+microservices, high volume event processing, or a full blown backend message-bus application, Vert.x is a great fit.
+It's fast and does not constraint you. Last but not least, Vert.x provides appropriate tools to build reactive systems; systems that are: _responsive, elastic, resilient, and asynchronous_!
+
+It's time to get your (coding) hands dirty. We are going to start with a few examples about Vert.x. These examples are not
+related to the application we are going to develop later in this lab but are just there to let you start playing
+with Vert.x.
+
+=== From callbacks to Reactive Programming
+
+Vert.x uses a simple callback based asynchrony and its `Future` object is an helper tool useful for callback
+coordination (more about `Future` will be covered in the _compulsive trader_ chapter). RxJava implements the Reactive
+Extensions for the JVM and is a library for composing asynchronous and event-based programs.
+
+With RxJava, you model your code around data flow (called `Flowable` or `Observable`). These data flow are pipes in
+which data transits. They are several types of _pipes_:
+
+1. `Flowable` and `Observable` can represent finite or infinite streams. `Flowable` support _back-pressure_.
+2. `Single` are streams with a single element.
+3. `Maybe` are streams with either 0 or one element.
+4. Finally a `Completable` represents a stream with no elements, i.e it can only complete without a value or fail.
+
+To use such reactive type, a _subscription_ operation is necessary.
+
+[source, java]
+----
+Flowable<String> stream = getStringFlowable();
+
+// Subscribe to the stream
+stream.subscribe(item -> {
+  // Received a String item
+  }, error -> {
+  // Error termination => no more items
+  }, () -> {
+  // Normal termination => no more items
+  });
+----
+
+`Singles` are simpler to work with as they hold exactly one element, they have some similarities with future/promises
+although they have noticeable differences:
+
+* a future/promise is the result of an asynchronous operation, e.g, you start a server and you get a promise of the
+server bind result
+* a single result usually has a side effect at subscription time, e.g you subscribe to the single, as side effect it 
+starts the server and the single notifies you of the bind result
+
+[source, java]
+----
+Single<String> single = getStringSingle();
+
+// Subscribe to the single
+single.subscribe(item -> {
+  // Completion with the string item
+  }, error -> {
+  // Completion with an error
+  });
+----
+
+==== Composition and transformation
+
+RxJava provides a very useful set of operators for composing and transforming asynchronous flows. We will use the main
+ones in this lab : `map`, `flatMap` and `zip`.
+
+The `map` operator transforms synchronously the result of an operation.
+
+[source, java]
+----
+// Transform the stream of strings into a stream of Buffer
+Flowable<Buffer> stream = getStringFlowable().map(s -> vertx.fileSystem().readFileBlocking(s));
+
+// Transform the string single into a Buffer single
+Single<Buffer> single = getStringSingle().map(s -> vertx.fileSystem().readFileBlocking(s));
+----
+
+The drawback of the `map` operator is the imposed synchrony, in order to retrieve the content of a file we have
+to use the _blocking_ version of the filesystem, and thus we break the Vert.x golden rule!
+
+Fortunately there is an asynchronous version called `flatMap`.
+
+[source, java]
+----
+// Transform the stream of strings into a stream of Buffer
+Flowable<Buffer> stream = getStringFlowable().flatMap(s -> {
+  Single<Buffer> single = vertx.fileSystem().rxReadFile();
+  return single.toFlowable();
+});
+
+// Transform the string single into a Buffer single
+Single<Buffer> single = getStringSingle().flatMap(s -> {
+  Single<Buffer> single = vertx.fileSystem().rxReadFile();
+  return single;
+});
+----
+
+The `zip` operator combines the results of several `Flowable`/`Single` in a single result, let's see with `Single`:
+
+[source, java]
+----
+Single<String> single1 = getStringSingle();
+Single<String> single2 = getStringSingle();
+Single<String> single3 = getStringSingle();
+
+Single<String> combinedSingle = Single.zip(single1, single2, single3, (s1,s2,s3) -> s1 + s2 + s3);
+
+combinedSingle.subscribe(s -> {
+  // Got the three concatenated strings
+}, error -> {
+  // At least one of single1, single2 or single3 failed
+});
+
+----
+
+It works similarly for `Flowable`, but for the sake of the conciseness we will not study it here.
+
+=== Vert.x + RX Java
+
+Vert.x has an RX version of its asynchronous API packaged with the `io.vertx.*reactivex*` prefix, e.g `io.vertx.*reactivex*
+.core.Vertx` is the RX-ified version of `io.vertx.core.Vertx`. The _rxified_ version of Vert.x exposes the
+asynchronous methods as `Single` and the stream types as `Flowable`.
+
+==== Vert.x streams => Flowables
+
+The type `ReadStream<T>` models a reactive sequence of `T` items, for instance an `HttpServerRequest` is a `ReadStream<Buffer>`.
+
+The _rxified_ version exposes a `toFlowable()` method to turn the stream into an `Flowable<T>`:
+
+[source, java]
+----
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.core.http.HttpServer;
+
+...
+
+Vertx vertx = Vert.vertx();
+HttpServer server = vertx.createHttpServer();
+server.requestHandler(request -> {
+  if (request.path().equals("/upload")) {
+    Flowable<Buffer> stream = request.toFlowable();
+    stream.subscribe(buffer -> {
+      // Got an uploaded buffer
+      }, error -> {
+      // Got an error => no more buffers
+      }, () -> {
+      // Done => no more buffers
+    });
+  }
+});
+----
+
+==== Vert.x Handler / Future => Singles
+
+Each asynchronous method, i.e a method having a last parameter `Handler<AsyncResult<T>>`, has an _rxified_ version, named
+ after the original method name prefixed by `rx`, with the same parameters minus the last and returning a `Single` of
+  the asynchronous type.
+
+Unlike the original method, calling the _rx_ version does not make an actual call. Instead you get a single that will
+call the actual method at subscription time.
+
+[source, java]
+----
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.core.http.HttpServer;
+
+...
+
+Vertx vertx = Vert.vertx();
+HttpServer server = vertx.createHttpServer();
+server.requestHandler(request -> ...);
+
+// The single has been created but the server is actually not starting at this point
+Single<HttpServer> listenSingle = server.rxListen(8080);
+
+// Triggers the actual start
+listenSingle.subscribe(
+  server -> {
+    // The server is started and bound on 8080
+  }, error -> {
+    // The server could not start
+  });
+----
+
+=== Exercise 1 - Vert.x applications are Java applications
+
+In this first exercise, let's start from the very beginning:
+
+1. Create an instance of Vert.x
+2. Start an HTTP server sending greetings
+
+Open the `vertx-exercises/src/main/java/io/vertx/workshop/exercise/Exercise1.java` file. Notice that this exercise is just
+ a `main` method.
+
+Follow the instruction located in the class. Use your IDE to run the application (by running the `main` method). If
+your code is right, you should see a "Hello" message when you open your browser on http://localhost:8080.
+
+NOTE: Don't forget to stop the application between runs.
+
+[.assignment]
+****
+[source, java]
+----
+    // 1 - Create the Vert.x instance using Vertx.vertx (use io.vertx.core.Vertx)
+    Vertx vertx = Vertx.vertx();
+
+    // 2 - Create a HTTP server using the `createHttpServer` method. Set a request handler doing:
+    // `req.response().end("hello")`
+    // Call the listen method with `8080` as parameter.
+
+    vertx.createHttpServer()
+        .requestHandler(req -> req.response().end("hello"))
+        .listen(8080);
+----
+****
+
+=== Exercise 2 - Using verticles
+
+While using a main method is nice and simple, it does not necessarily scale. When your code base grows, you need a
+better way to structure your code. For this, Vert.x provides _verticles_ - a simple agent-like model. Verticles are
+single-threaded classes interacting using asynchronous messages.
+
+Open the `vertx-exercises/src/main/java/io/vertx/workshop/exercise/Exercise2.java` file. In the `main` method, deploy the
+`Exercise2Verticle`. Then, implement the missing functionnality in the verticle class (`Exercise2Verticle.java`).
+
+Run and check the result as in the previous exercise. Emit the request several time in a row to check that your
+verticle is always executed by the same thread.
+
+[.assignment]
+****
+[source, java]
+----
+    // Exercise2.java
+    // --------------
+
+    // 1 - Create the Vert.x instance using Vertx.vertx (use io.vertx.core.Vertx)
+    Vertx vertx = Vertx.vertx();
+
+    // 2 - Deploy the `Exercise2Verticle` verticle using: vertx.deployVerticle(className);
+    vertx.deployVerticle(Exercise2Verticle.class.getName());
+
+    // -----------------------------------------------------
+
+    // Exercise2Verticle.java
+    // ----------------------
+
+    vertx.createHttpServer()
+        .requestHandler(req -> req.response().end(Thread.currentThread().getName()))
+        .listen(8080);
+----
+****
+
+=== Exercise 3 - Do not block the event loop
+
+In this exercise, we are going to voluntarily break the golden rule - block the event loop.
+
+In the `Exercise2Verticle` class, call sleep before writing the result into the response.
+
+When running this code and calling the server, you can see that the requests are not served in a timely fashion
+anymore. With the thread being blocked, it can't serve the subsequent requests before completing the first one.
+
+Also notice the output in the console, Vert.x detects that the event loop has been blocked and starts yelling ...
+
+[.assignment]
+****
+[source, java]
+----
+vertx.createHttpServer()
+    .requestHandler(req -> {
+        sleep();
+        req.response().end(Thread.currentThread().getName());
+    })
+    .listen(8080);
+----
+****
+
+You may wonder how you will be able to call blocking code. Don't worry, Vert.x provides several ways to do so. A
+construct named `executeBlocking` and a type of verticle named _worker_ are not executed on the event loop.
+
+=== Exercise 4 - Sending and receiving messages
+
+Verticles are a great way to structure your code, but how do verticles interact? They use the event bus to 
+send and receive messages. Let's see how it works. Exercise 4 is composed of 2 verticles: a sender and a
+receiver. The sender emits a greeting message periodically. The receiver prints this message to the console. As JSON
+is a very common format in Vert.x applications, this exercise also introduces the `JsonObject`, a facility to create
+ and manipulate JSON structures.
+
+First, open the `vertx-exercises/src/main/java/io/vertx/workshop/exercise/Exercise4SenderVerticle.java` file and follow the instructions to send a
+greeting message every 2 seconds. This message is a JSON structure: `{"message":"hello"}`. Do not hesitate to extend
+it if you want.
+
+[.assignment]
+****
+[source, java]
+----
+// Retrieve the event bus
+EventBus eventBus = vertx.eventBus();
+
+// Execute the given handler every 2000 ms
+vertx.setPeriodic(2000, l -> {
+    // Use the eventBus() method to retrieve the event bus and send a "{"message":hello"} JSON message on the
+    // "greetings" address.
+
+    // 1 - Create the JSON object using the JsonObject class, and `put` the 'message':'hello' entry
+    JsonObject json = new JsonObject().put("message", "hello");
+
+    // 2 - Use the `send` method of the event bus to _send_ the message. Messages sent with the `send` method
+    // are received by a single consumer. Messages sent with the `publish` method are received by all
+    // registered consumers.
+    eventBus.send("greetings", json);
+});
+----
+****
+
+Then, open the `vertx-exercises/src/main/java/io/vertx/workshop/exercise/Exercise4ReceiverVerticle.java` file and follow the instructions to receive
+the messages sent by the other verticle. To achieve this, register a `consumer` on the `greetings` address and
+implement the `Handler` to process the received messages.
+
+TIP: Use `vertx.eventBus().<JsonObject>consumer(...)` to indicate to the compiler that you expect a JSON message.
+
+[.assignment]
+****
+[source, java]
+----
+// Retrieve the event bus and register a consumer on the "greetings" address. For each message, print it on
+// the console. You can retrieve the message body using `body()`. Use the method `encodePrettily`
+// on the retrieved Json body to print it nicely.
+vertx.eventBus().<JsonObject>consumer("greetings", msg -> {
+    System.out.println(msg.body().encodePrettily());
+});
+----
+****
+
+To launch this exercise, use the `io.vertx.workshop.exercise.Exercise4#main` method. If implemented correctly you
+would see the greeting messages printed on the console. Don't forget to stop the application before switching to the
+next exercise.
+
+=== Exercise 5 - Request Reply and Composing actions
+
+Let's now mix the HTTP server and the event bus. The first verticle creates an HTTP server, but to respond to the
+request, it sends a message to another verticle and _waits_ for a reply. This reply is used as response to the HTTP
+request. This introduces the `request-reply` delivery mechanism of the event bus. This exercice is composed of a
+_main` class (`io.vertx.workshop.exercise.Exercise5`) and two verticles: `io.vertx.workshop.exercise
+.Exercise5HttpVerticle` and `io.vertx.workshop.exercise.Exercise5ProcessorVerticle`.
+
+Let's start with the  `io.vertx.workshop.exercise.Exercise5ProcessorVerticle` class. Follow the instructions to
+receive messages from the `greetings` and reply to the received messages.
+
+[.assignment]
+****
+[source, java]
+----
+EventBus eventBus = vertx.eventBus();
+
+// Register a consumer and call the `reply` method with a JSON object containing the greeting message. ~
+// parameter is passed in the incoming message body (a name). For example, if the incoming message is the
+// String "vert.x", the reply contains: `{"message" : "hello vert.x"}`.
+// Unlike the previous exercise, the incoming message has a `String` body.
+eventBus.<String>consumer("greetings", msg -> {
+    JsonObject json = new JsonObject().put("message", "hello " + msg.body());
+    msg.reply(json);
+});
+----
+****
+
+Then, edit the `vertx-exercises/src/main/java/io/vertx/workshop/exercise/Exercise5HttpVerticle.java` file. In this verticle, we need to create an HTTP
+server. The `requestHandler` extracts the query parameter `name` (or use `world` if not set), sends a message on the
+event bus, and writes the HTTP response when the reply from the event bus is received.
+
+[.assignment]
+****
+[source, java]
+----
+vertx.createHttpServer()
+    .requestHandler(req -> {
+
+        // 1 - Retrieve the `name` (query) parameter, set it to `world if null`. You can retrieve the
+        // parameter using: `req.getParam()`
+        String name = req.getParam("name");
+        if (name == null) { name = "world"; }
+
+        // 2 - Send a message on the event bus using the `send` method. Pass a reply handler receiving the
+        // response. As the expected object is a Json structure, you can use `vertx.eventBus()
+        // .<JsonObject>send(...`).
+        // In the reply handler, you receive an `AsyncResult`. This structure describes the outcome from an
+        // asynchronous operation: a success (and a result) or a failure (and a cause). If it's a failure
+        // (check with the `failed` method), write a 500 HTTP response with the cause (`cause.getMessage()`) as
+        // payload. On success, write the body into the HTTP response.
+        vertx.eventBus().<JsonObject>send("greetings", name, reply -> {
+            if (reply.failed()) {
+                req.response().setStatusCode(500).end(reply.cause().getMessage());
+            } else {
+                req.response().end(reply.result().body().encode());
+            }
+        });
+    })
+    .listen(8080);
+----
+****
+
+Launch the exercise using the `Exercise5#main` method. Check the result by opening your browser to
+http://localhost:8080 (should display `hello world`) and http://localhost:8080?name=vert.x (should display `hello
+vert.x`).
+
+This exercise shows how to compose asynchronous actions and how to use the `AsyncResult` structure. But as you can
+imagine, it quicksly ends up with lots of callbacks. Let's move to the next example to show how RX Java can help
+in taming the asynchronous coordination.
+
+=== Exercise 6 - Use RX Java 2
+
+This exercise is a rewrite of the previous one using RX Java 2. As mentioned above, RX Java is an implementation of the
+_reactive programming_ principles for Java. With this development model, we manipulate _streams_ (called `Flowable`,
+`Observable`, `Maybe`, `Single` or `Completable` depending on the number of items and their characteristics). RX Java
+ provides a lots of operators to compose _streams_ together and so write asynchronous orchestration easily. This
+ exercise is a very basic introduction to RX Java. 
+
+Open the `vertx-exercises/src/main/java/io/vertx/workshop/exercise/Exercise6HttpVerticle.java` file and follow the instructions. Notice the `import`
+statements containing the `reactivex` package. This package contains the _RX-ified_ Vert.x API.
+
+[.assignment]
+****
+[source, java]
+----
+ vertx.createHttpServer()
+    .requestHandler(req -> {
+        String name = req.getParam("name");
+        if (name == null) {
+            name = "world";
+        }
+
+        // Send a message on the event bus using the `send` method. Pass a reply handler receiving the
+        // response. As the expected object is a Json structure, you can use `vertx.eventBus()
+        // .<JsonObject>send(...`).
+        // Unlike in the previous exercise, we use the `rxSend` method to retrieve a `Single` stream. We then
+        // _map_ the result to extract the Json structure (encoded as String).
+        // In RX, we must `subscribe` to the stream to trigger the processing. Without this nothing happens. There
+        // are several `subscribe` methods, but here we recommend the `BiConsumer` format `(res, err) -> ...`
+        // If it's a failure (err != null), write a 500 HTTP response with the cause (`err.getMessage()`) as
+        // the payload. On success, write the body (`res`) into the HTTP response.
+
+        vertx.eventBus().<JsonObject>rxSend("greetings", name)
+            .map(message -> message.body().encode())
+            .subscribe((res, err) -> {
+                if (err != null) {
+                    req.response().setStatusCode(500).end(err.getMessage());
+                } else {
+                    req.response().end(res);
+                }
+            });
+    })
+    .listen(8080);
+----
+****
+
+ 
+Launch the exercise using the `Exercise6#main` method. Check the result by opening your browser to
+http://localhost:8080 (should display `hello world`) and http://localhost:8080?name=vert.x (should display `hello
+vert.x`).
+
+=== Let's move on
+
+By now, you should have a better understanding of Vert.x and how to use it. But that's just the beginning. Serious
+things are coming ...
+
+

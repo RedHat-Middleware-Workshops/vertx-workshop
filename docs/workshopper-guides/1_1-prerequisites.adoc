@@ -1,0 +1,76 @@
+== Prerequisites
+
+We will get to the good stuff, coding all the way soon... But before we start, we need to install some software on our machines.
+
+=== Hardware
+
+* Operating System: Mac OS X (10.8+), Windows 8.1+, Ubuntu 12+, CentOS 7+, Fedora 22+
+* Memory: At least 8 GB+
+
+=== Java Development Kit
+
+We need a JDK 8+ installed on our machine. Latest JDK can downloaded from:
+
+* http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html[Oracle JDK 8]
+* http://openjdk.java.net/install/[OpenJDK]
+
+You can use either Oracle JDK or OpenJDK.
+
+=== Apache Maven
+
+You need Apache Maven 3.5+. If you don't have it already:
+
+* Download Apache Maven from https://maven.apache.org/download.cgi.
+* Unzip to a directory of your choice and add it to the `PATH`.
+
+
+=== Minishift and OpenShift Client
+
+Minishift provides a way to run Openshift (and so Kubernetes) on your laptop.
+
+1. Download minishift from https://github.com/minishift/minishift/releases
+2. Follow the instructions from https://docs.openshift.org/latest/minishift/getting-started/installing.html to install
+ it.
+
+Be aware of the prerequisites in terms of hypervisors.
+
+At the end of the installation process, you should have the `minishift` executable in your `$PATH`. Then, follow the
+instructions from https://docs.openshift.org/latest/minishift/getting-started/quickstart.html to start minishift and
+access the OpenShift Client (command-line) and console (browser).
+
+=== IDE
+
+We recommend you use an IDE. You can use Eclipse, IntelliJ, VS Code or Netbeans.
+
+==== No IDE ?
+
+If you don't have an IDE, here are the steps to get started with Eclipse.
+
+1. First download Eclipse from http://www.eclipse.org/downloads/packages/eclipse-ide-java-developers/oxygen1[the download page].
+2. In the _Download Links_ section, be sure to select the right version for your operating system. Once selected it brings you to a download page with a
+`Download` button.
+3. Once downloaded, unzip it.
+4. In the destination directory, you should find an `Eclipse` binary that you can execute.
+5. Eclipse asks you to create a workspace.
+6. Once launched, click on the _Workbench_ arrow (top right corner).
+
+=== Getting the code
+
+[source]
+----
+git clone https://github.com/cescoffier/vertx-kubernetes-workshop
+----
+
+You can import the code in your IDE as a Maven project. You can refer to your IDE documentation to know how to import Maven projects.
+
+For Eclipse:
+
+1. Click on `File - Import ... - Maven - Existing Maven Projects`
+2. Select the location where you cloned the sources
+3. Click _Finish_ and wait...
+
+You are going to see a couple of compilation errors. This is because Eclipse does not mark the `src/main/generated`
+directories as _source root_ by default. Right-click on `portfolio-service/src/main/generated` and select _Build Path
+-> Use as Source Folder_.
+
+
