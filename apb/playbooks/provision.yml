@@ -96,7 +96,7 @@
       status_code: 200,201
       force_basic_auth: true
     ignore_errors: true
-    with_sequence: start=0 end={{ infrasvcs_gogs_user_count }} format="{{ gogs_user_format }}"
+    with_sequence: start=1 end={{ infrasvcs_gogs_user_count }} format="{{ gogs_user_format }}"
     when: infrasvcs_gogs_user_count > 0
 
   - name: migrate repos for all users
@@ -111,7 +111,7 @@
       status_code: 200,201
       force_basic_auth: true
     ignore_errors: true
-    with_sequence: start=0 end={{ infrasvcs_gogs_user_count }}
+    with_sequence: start=1 end={{ infrasvcs_gogs_user_count }}
     when: infrasvcs_gogs_user_count > 0
 
   # deploy guides
@@ -121,7 +121,7 @@
     vars:
       workshopper_name: guides
       project_name: "{{ namespace }}"
-      workshopper_content_url_prefix: "https://raw.githubusercontent.com/{{ github_account }}/cloud-native-workshop-v2-guides/{{ github_ref }}"
+      workshopper_content_url_prefix: "https://raw.githubusercontent.com/{{ github_account }}/vertx-kubernetes-workshop/{{ github_ref }}/docs/workshopper-guides"
       workshopper_workshop_urls: "https://raw.githubusercontent.com/{{ github_account }}/vertx-kubernetes-workshop/{{ github_ref }}/docs/workshopper-guides/_workshop-guides-che.yml"
       workshopper_env_vars:
         PROJECT_SUFFIX: "{{ project_suffix }}"
