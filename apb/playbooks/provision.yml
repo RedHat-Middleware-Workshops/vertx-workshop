@@ -140,8 +140,13 @@
     tags: jdk
 
   - name: install java image stream
-    shell: "oc apply -n openshift -f https://raw.githubusercontent.com/jboss-openshift/application-templates/master/openjdk/openjdk18-image-stream.json"
+    shell: "oc create -n openshift -f https://raw.githubusercontent.com/jboss-container-images/openjdk/develop/templates/image-streams.json"
     when: java_imagestream_result is failed
+    tags: jdk
+  
+  - name: update the java image stream
+    shell: "oc replace -n openshift -f https://raw.githubusercontent.com/jboss-container-images/openjdk/develop/templates/image-streams.json"
+    when: java_imagestream_result is succeded
     tags: jdk
 
   # deploy eclipse che
@@ -157,7 +162,7 @@
       install_java_oc_stack: false
       install_custom_stacks_json: |
         [{
-          "name": "Java Cloud-Native",
+          "name": "Java Vert.x",
           "description": "Java JDK Stack on CentOS for Vertx-Workshop",
           "scope": "general",
           "workspaceConfig": {
@@ -165,7 +170,7 @@
               "default": {
                 "recipe": {
                   "type": "dockerimage",
-                  "content": "siamaksade/che-centos-jdk8"
+                  "content": "registry.centos.org/che-stacks/vertx"
                 },
                 "machines": {
                   "dev-machine": {
@@ -308,6 +313,6 @@
             "CentOS",
             "Git"
           ],
-          "id": "java-oc-centos-cloudnative"
+          "id": "java-oc-centos-vertx"
         }]
     tags: eclipse-che

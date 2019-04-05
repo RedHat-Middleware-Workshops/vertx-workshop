@@ -10,7 +10,8 @@ If running via your own machine you can run the following command
              -e namespace="$(oc project -q)"  \
              -e openshift_token=$(oc whoami -t) \
              -e infrasvcs_gogs_user_count=10 \
-             -e che_generate_user_count=10
+             -e che_generate_user_count=10 \
+             -e openshift_master_url=$(oc whoami --show-server)/console
   ```
 
 to follow the logs
