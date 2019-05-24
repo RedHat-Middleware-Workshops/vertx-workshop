@@ -31,7 +31,6 @@ echo "Converting to HTML ..."
 $ASCIIDOCTOR -v $SHARED_OPTIONS $MASTER_ADOC
 
 cp -R images output
-mv chapters/*.png images
 rm -Rf **/.asciidoctor
 
 
