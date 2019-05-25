@@ -1,9 +1,8 @@
 package io.vertx.workshop.quote;
 
-import io.vertx.core.Future;
+import io.reactivex.Completable;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
-import io.vertx.reactivex.CompletableHelper;
 import io.vertx.reactivex.core.AbstractVerticle;
 import io.vertx.reactivex.core.eventbus.Message;
 import io.vertx.reactivex.core.http.HttpServer;
@@ -20,7 +19,7 @@ public class RestQuoteAPIVerticle extends AbstractVerticle {
     private Map<String, JsonObject> quotes = new HashMap<>();
 
     @Override
-    public void start(Future<Void> future) throws Exception {
+    public Completable rxStart() {
         // Get the stream of messages sent on the "market" address
         vertx.eventBus().<JsonObject>consumer(GeneratorConfigVerticle.ADDRESS).toFlowable()
             // TODO Extract the body of the message using `.map(msg -> {})`
@@ -66,8 +65,7 @@ public class RestQuoteAPIVerticle extends AbstractVerticle {
             })
             .subscribe();
 
-        server.rxListen(config().getInteger("http.port", 8080))
-            .toCompletable()
-            .subscribe(CompletableHelper.toObserver(future));
+        return server.rxListen(config().getInteger("http.port", 8080))
+                .ignoreElement();
     }
 }

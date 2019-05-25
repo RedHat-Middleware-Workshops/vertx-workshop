@@ -163,7 +163,7 @@ private Single<HttpServer> configureTheHTTPServer() {
     Router router = Router.router(vertx);
     router.get("/").handler(this::retrieveOperations);
     return vertx.createHttpServer()
-        .requestHandler(router::accept)
+        .requestHandler(router)
         .rxListen(8080);
 }
 ----
@@ -298,7 +298,7 @@ private Single<HttpServer> configureTheHTTPServer() {
             rc.response().setStatusCode(503).end();
         }
     });
-    return vertx.createHttpServer().requestHandler(router::accept).rxListen(8080);
+    return vertx.createHttpServer().requestHandler(router).rxListen(8080);
 }
 ----
 ****

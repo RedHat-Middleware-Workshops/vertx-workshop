@@ -25,7 +25,7 @@ public class CurrencyService extends AbstractVerticle {
         router.post().handler(this::handle);
 
         vertx.createHttpServer()
-            .requestHandler(router::accept)
+            .requestHandler(router)
             .listen(config().getInteger("port", 8080),
                 ar -> future.handle(ar.mapEmpty()));
     }

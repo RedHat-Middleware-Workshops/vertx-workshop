@@ -44,7 +44,7 @@ public class CurrencyServiceProxy extends AbstractVerticle {
 
 
         vertx.createHttpServer()
-            .requestHandler(router::accept)
+            .requestHandler(router)
             .listen(8080);
     }
 

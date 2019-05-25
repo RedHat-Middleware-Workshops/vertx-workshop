@@ -146,7 +146,7 @@ public class AuditVerticle extends AbstractVerticle {
                 rc.response().setStatusCode(503).end();
             }
         });
-        return vertx.createHttpServer().requestHandler(router::accept).rxListen(8080);
+        return vertx.createHttpServer().requestHandler(router).rxListen(8080);
         //----
 
 //        return ready;

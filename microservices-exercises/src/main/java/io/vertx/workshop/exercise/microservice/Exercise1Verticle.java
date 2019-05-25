@@ -40,7 +40,7 @@ public class Exercise1Verticle extends AbstractVerticle{
 
         
         vertx.createHttpServer()
-            .requestHandler(router::accept)
+            .requestHandler(router)
             .rxListen(8080)
             // When the server is ready, we publish the service
             .flatMap(this::publish)
