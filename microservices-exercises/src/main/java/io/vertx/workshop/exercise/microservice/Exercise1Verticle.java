@@ -46,7 +46,7 @@ public class Exercise1Verticle extends AbstractVerticle{
             .flatMap(this::publish)
             // Store the record, required to un-publish it
             .doOnSuccess(rec -> this.record = rec)
-            .toCompletable()
+            .ignoreElement()
             .subscribe(toObserver(future));
     }
 

@@ -64,14 +64,14 @@ public class TraderUtils {
                     .doOnSuccess(p -> System.out.println("Sold " + numberOfShares + " of " + company + "!"))
                     .doOnError(e -> System.out.println("D'oh, failed to sell " + numberOfShares + " of "
                         + company + ": " + e.getMessage()))
-                    .toCompletable();
+                    .ignoreElement();
             } else {
                 System.out.println("Trying to buy " + numberOfShares + " " + company);
                 return portfolio.rxBuy(numberOfShares, quote)
                     .doOnSuccess(p -> System.out.println("Bought " + numberOfShares + " of " + company + " !"))
                     .doOnError(e -> System.out.println("D'oh, failed to buy " + numberOfShares + " of " + company + " : " + e
                         .getMessage()))
-                    .toCompletable();
+                    .ignoreElement();
             }
         }
 
