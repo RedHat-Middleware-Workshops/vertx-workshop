@@ -1,10 +1,10 @@
 package io.vertx.workshop.portfolio.impl;
 
 import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.reactivex.servicediscovery.ServiceDiscovery;
 import io.vertx.reactivex.servicediscovery.types.EventBusService;
 import io.vertx.servicediscovery.Record;
-import io.vertx.reactivex.servicediscovery.ServiceDiscovery;
-import io.vertx.serviceproxy.ProxyHelper;
+import io.vertx.serviceproxy.ServiceBinder;
 import io.vertx.workshop.portfolio.PortfolioService;
 
 import static io.vertx.workshop.portfolio.PortfolioService.ADDRESS;
@@ -26,7 +26,8 @@ public class PortfolioVerticle extends AbstractVerticle {
       PortfolioServiceImpl service = new PortfolioServiceImpl(vertx, discovery, config().getDouble("money", 10000.00));
 
       // Register the service proxy on the event bus
-      ProxyHelper.registerService(PortfolioService.class, vertx.getDelegate(), service, ADDRESS);
+      ServiceBinder binder = new ServiceBinder(vertx.getDelegate()).setAddress(ADDRESS);
+      binder.register(PortfolioService.class, service);
 
       Record record = EventBusService.createRecord("portfolio", ADDRESS, PortfolioService.class.getName());
       discovery.publish(record, ar -> {
