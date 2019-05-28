@@ -42,7 +42,7 @@ public class RXCompulsiveTraderVerticle extends AbstractVerticle {
             // signature.
 
 
-            // TODO 4 - Transform the output into a Completable (toCompletable) and subscribe to it using:
+            // TODO 4 - Transform the output into a Completable (ignoreElement) and subscribe to it using:
             //.subscribe(CompletableHelper.toObserver(future)) - it reports the failure or success to the `done`
             // future.
             

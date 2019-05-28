@@ -5,7 +5,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-import io.vertx.serviceproxy.ProxyHelper;
+import io.vertx.serviceproxy.ServiceProxyBuilder;
 import io.vertx.workshop.portfolio.Portfolio;
 import io.vertx.workshop.portfolio.PortfolioService;
 import org.junit.After;
@@ -29,7 +29,7 @@ public class PortfolioServiceImplTest {
 
     Async async = tc.async();
     vertx.deployVerticle(io.vertx.workshop.portfolio.impl.PortfolioVerticle.class.getName(), id -> {
-      service = ProxyHelper.createProxy(PortfolioService.class, vertx, PortfolioService.ADDRESS);
+      service = new ServiceProxyBuilder(vertx).setAddress(PortfolioService.ADDRESS).build(PortfolioService.class);
       service.getPortfolio(ar -> {
         tc.assertTrue(ar.succeeded());
         original = ar.result();

@@ -10,6 +10,6 @@ spec:
                   apiVersion: v1
                   fieldPath: metadata.namespace
             - name: JAVA_OPTIONS
-              value: '-Dvertx.cacheDirBase=/tmp -Dvertx.jgroups.config=default-configs/default-jgroups-kubernetes.xml -Djava.net.preferIPv4Stack=true'
+              value: '-Dvertx.cacheDirBase=/tmp -Dvertx.jgroups.config=default-configs/default-jgroups-kubernetes.xml -Djava.net.preferIPv4Stack=true -Dvertx.metrics.options.enabled=true -Dvertx.metrics.options.registryName=vertx-dw'
             - name: JAVA_ARGS
-              value: '-Dvertx.cacheDirBase=/tmp -Dvertx.jgroups.config=default-configs/default-jgroups-kubernetes.xml -Djava.net.preferIPv4Stack=true -cluster -Dvertx.metrics.options.enabled=true -Dvertx.metrics.options.registryName=vertx-dw'
+              value: '-cluster'

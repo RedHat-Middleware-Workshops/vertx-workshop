@@ -1,7 +1,7 @@
 package io.vertx.workshop.portfolio.impl;
 
 import io.vertx.core.Vertx;
-import io.vertx.serviceproxy.ProxyHelper;
+import io.vertx.serviceproxy.ServiceProxyBuilder;
 import io.vertx.workshop.portfolio.Portfolio;
 import io.vertx.workshop.portfolio.PortfolioService;
 import org.junit.Ignore;
@@ -22,7 +22,7 @@ public class PortfolioVerticleTest {
     Vertx vertx = Vertx.vertx();
     vertx.deployVerticle(PortfolioVerticle.class.getName());
 
-    PortfolioService proxy = ProxyHelper.createProxy(PortfolioService.class, vertx, PortfolioService.ADDRESS);
+    PortfolioService proxy = new ServiceProxyBuilder(vertx).setAddress(PortfolioService.ADDRESS).build(PortfolioService.class);
 
     assertThat(proxy).isNotNull();
     AtomicReference<Portfolio> reference = new AtomicReference<>();
