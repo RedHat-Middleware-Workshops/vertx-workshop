@@ -145,7 +145,7 @@
     tags: jdk
   
   - name: update the java image stream
-    shell: "oc replace -n openshift -f https://raw.githubusercontent.com/jboss-container-images/openjdk/develop/templates/image-streams.json"
+    shell: "oc replace --force -n openshift -f https://raw.githubusercontent.com/jboss-container-images/openjdk/develop/templates/image-streams.json"
     when: java_imagestream_result is succeeded
     tags: jdk
 
