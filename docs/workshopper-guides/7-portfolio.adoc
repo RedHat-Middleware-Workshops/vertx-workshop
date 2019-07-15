@@ -19,22 +19,7 @@ being one of them. With RPC, a component can effectively send a request to anoth
 call, which results in the request being packaged in a message and sent to the callee. Likewise, the result is sent back
  and returned to the caller component as the result of the procedure call:
 
-[plantuml, rpc-sequence, png]
-----
-@startuml
-autonumber
-Bob -> Proxy: hello("Bob")
-hnote over Bob : blocked
-Proxy -> Proxy: Encapsulate the call in a network message
-Proxy ->o Server: Network Communication
-Server -> Server: Unpack the message
-Server -> Alice: hello("Bob")
-Server -> Server: Encapsulate the result in a network message
-Server ->o Proxy: Network Communication
-Proxy -> Proxy: Unpack the message
-Proxy -> Bob : "hello Bob"
-@enduml
-----
+image::rpc-sequence.png[RPC Sequence,600]
 
 Such interactions have the advantage of introducing typing, and so are less error-prone than unstructured messages. However, it also
  introduces a tighter coupling between the caller and the callee. The caller knows how to call the callee:
@@ -49,27 +34,7 @@ failures while distributed communications have many reasons to fail.
 Fortunately, Vert.x proposes a different form of RPC: Async RPC. Async RPC follows the same principles as RPC, but
 instead of _waiting_ for the response, the result is passed asynchronous.
 
-[plantuml, async-rpc-sequence, png]
-----
- @startuml
- autonumber
- participant Bob
- participant Handler
- participant Proxy
- participant Server
- participant Alice
- Bob -> Proxy: hello("Bob", handler)
- hnote over Bob : not blocked
- Proxy -> Proxy: Encapsulate the call in a network message
- Proxy ->o Server: Network Communication (event bus message)
- Server -> Server: Unpack the message
- Server -> Alice: hello("Bob")
- Server -> Server: Encapsulate the result in a network message
- Server ->o Proxy: Network Communication (event bus message reply)
- Proxy -> Proxy: Unpack the message
- Proxy -> Handler : AsyncResult("hello Bob")
- @enduml
-----
+image::proxy-sequence-timeout.png[ASYNC RPC Sequence,600]
 
 The `AsyncResult` notifies the `Handler` whether the invocation succeeded or failed. Upon success, the handler can
  retrieve the result.
@@ -167,25 +132,7 @@ NOTE: Did you know that the term `Future` was introduced in 1977, `Promise` in 1
 
 So, how does this work with our async RPC service, let's look at this sequence diagram:
 
-[plantuml, portfolio-sequence, png]
-----
- @startuml
- autonumber
- participant user
- participant handler
- participant proxy
- user -> proxy: proxy.getPorfolio(handler)
- proxy -> proxy: Encapsulate the call in a network message
- proxy ->o server: Network Communication (event bus message)
- server -> server: Unpack the message
- server -> PortfolioServiceImpl_instance: getPortfolio(another-handler)
- PortfolioServiceImpl_instance -> PortfolioServiceImpl_instance: another-handler.handle(Future.succeededFuture(portfolio));
- server -> server : Encapsulate the result in a network message
- server ->o proxy: Network Communication (event bus message reply)
- proxy -> proxy: Unpack the message
- proxy -> handler : resultHandler.handle(Future.succeededFuture(portfolio))
- @enduml
-----
+image::portfolio-sequence.png[Portfolio sequence,600]
 
 ==== Task - Sending an event on the event bus
 

@@ -1,11 +1,29 @@
 == Prerequisites
 
-We will get to the good stuff, coding all the way soon... But before we start, we need to install some software on our machines.
+We will get to the good stuff, coding all the way soon... But before we start, kindly ensure that you have a machine with the minimum requirements.
 
-=== Hardware
+We have setup a Che environment for you. So all you need is a good browser to go through the labs.
+But we dont restrict you, feel free to work with your own IDE on your machine. Just remmember that the labs docs are written for Che. 
 
-* Operating System: Mac OS X (10.8+), Windows 8.1+, Ubuntu 12+, CentOS 7+, Fedora 22+
-* Memory: At least 8 GB+
+== Optional: Setting up my own machine for the lab
+The labs are designed to run entirely on openshift, there is no mandatory requirement to install the following components. The following instructions are means for guidance for anyone who wants to try them out on their own machine. 
+
+*Recommended path is to use the Openshift environment provided in this workshop.
+
+=== Minishift and Openshift Client
+
+Minishift provides a way to run Openshift (and so Kubernetes) on your laptop.
+
+1. Download minishift from https://github.com/minishift/minishift/releases
+2. Follow the instructions from https://docs.openshift.org/latest/minishift/getting-started/installing.html to install
+ it.
+
+Be aware of the prerequisites in terms of hypervisors.
+
+At the end of the installation process, you should have the `minishift` executable in your `$PATH`. Then, follow the
+instructions from https://docs.openshift.org/latest/minishift/getting-started/quickstart.html to start minishift and
+access the OpenShift Client (command-line) and console (browser).
+
 
 === Java Development Kit
 
@@ -23,20 +41,6 @@ You need Apache Maven 3.5+. If you don't have it already:
 * Download Apache Maven from https://maven.apache.org/download.cgi.
 * Unzip to a directory of your choice and add it to the `PATH`.
 
-
-=== Minishift and OpenShift Client
-
-Minishift provides a way to run Openshift (and so Kubernetes) on your laptop.
-
-1. Download minishift from https://github.com/minishift/minishift/releases
-2. Follow the instructions from https://docs.openshift.org/latest/minishift/getting-started/installing.html to install
- it.
-
-Be aware of the prerequisites in terms of hypervisors.
-
-At the end of the installation process, you should have the `minishift` executable in your `$PATH`. Then, follow the
-instructions from https://docs.openshift.org/latest/minishift/getting-started/quickstart.html to start minishift and
-access the OpenShift Client (command-line) and console (browser).
 
 === IDE
 
@@ -58,7 +62,7 @@ If you don't have an IDE, here are the steps to get started with Eclipse.
 
 [source]
 ----
-git clone https://github.com/cescoffier/vertx-kubernetes-workshop
+git clone https://github.com/jbossdemocentral/vertx-kubernetes-workshop.git
 ----
 
 You can import the code in your IDE as a Maven project. You can refer to your IDE documentation to know how to import Maven projects.

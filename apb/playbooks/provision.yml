@@ -9,12 +9,12 @@
     openshift_master_url: 
     openshift_user_password:
     project_suffix: "-XX"
-    github_account: jbossdemocentral
+    github_account: sshaaf
     github_ref: master
     gogs_dev_user: developer
     gogs_pwd: openshift
     gogs_generate_user_format: user%02d  
-    gogs_clone_addr: "https://github.com/jbossdemocentral/vertx-kubernetes-workshop.git"
+    gogs_clone_addr: "https://github.com/sshaaf/vertx-kubernetes-workshop.git"
     gogs_repo_name: "vertx-kubernetes-workshop"
     gogs_user_count: 10
     che_generate_user_count: 10
