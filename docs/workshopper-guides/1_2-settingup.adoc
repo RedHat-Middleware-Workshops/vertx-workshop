@@ -1,4 +1,4 @@
-== Setting up for the lab
+== Setting up
 Before we start the lab, its important that you read the following instructions carefully. These instructions will be refered from the rest of the content if you need to come back to them.
 
 The lab environment is setup with a customized vert.x stack created for Eclipse Che or CodeReady
