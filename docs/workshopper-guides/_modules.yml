@@ -6,6 +6,8 @@ modules:
     name: Preface
   1_1-prerequisites:
     name: Prerequisites
+  1_2-settingup:
+    name: Setting up
   2-vertx:
     name: Getting started with Vert.x
   3-microservices:

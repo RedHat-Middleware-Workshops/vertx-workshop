@@ -91,39 +91,15 @@ Routes exposes a service outside of OpenShift. A route allows you to associate a
 
 image::openshift-entities.png[OpenShift Entities, 800]
 
-=== Installing and Starting OpenShift
 
-We are going to use _minishift_ (https://github.com/minishift/minishift) to run OpenShift locally on your machine.
-
-Before starting minishift, you need to install a hypervisor. Check the https://docs.openshift.org/latest/minishift/getting-started/installing.html 
-to check what are the supported ones for your operating system. When in doubt, use VirtualBox (https://www.virtualbox.org/wiki/Downloads). 
-Be sure to have a hypervisor before continuing.
-
-If not already done, download the latest release from https://github.com/minishift/minishift/releases (do not
-use beta). Download the archive and copy the `minishift` executable in the directory of your choice. Add this
-directory to your system `$PATH`. 
-
-Then, in a terminal, run:
+We have OpenShift running, but we need a way to interact with it. The _OpenShift Client_ (`oc`) is a command line
+ tool to interact with OpenShift. Fortunately, this client is shipped with minishift. Run the following `oc` command to connect to your OpenShift instance:
 
 [source, bash]
 ----
-minishift start
+oc login -u userXX -p <PASSWORD>
 ----
 
-When the starting sequence completes, you should get the URL of the OpenShift Web Console such as: `https://192.168
-.64.12:8443`. Open this url in a browser and connect using the default `developer/developer` credentials.
-
-Now we have OpenShift running, but we need a way to interact with it. The _OpenShift Client_ (`oc`) is a command line
- tool to interact with OpenShift. Fortunately, this client is shipped with minishift. Use `minishift oc-env` to display
-  the command you need to type into your shell in order to add the oc binary to your PATH environment variable. Then,
-   run the following `oc` command to connect to your OpenShift instance:
-
-[source, bash]
-----
-oc login -u developer -p developer
-----
-
-TIP: for Unix style shells you can run `eval $(minishift oc-env)` to make `oc` available.
 
 Now, you are ready to deploy your first application.
 
@@ -134,10 +110,10 @@ namespace making easy to organize your different applications in OpenShift. In a
 
 [source, bash]
 ----
-oc new-project vertx-kubernetes-workshop
-oc policy add-role-to-user view admin -n vertx-kubernetes-workshop
-oc policy add-role-to-user view -n vertx-kubernetes-workshop -z default
-oc policy add-role-to-group view system:serviceaccounts -n vertx-kubernetes-workshop
+oc new-project <USERXX>-vertx-kubernetes-workshop
+oc policy add-role-to-user view admin -n <USERXX>-vertx-kubernetes-workshop
+oc policy add-role-to-user view -n <USERXX>-vertx-kubernetes-workshop -z default
+oc policy add-role-to-group view system:serviceaccounts -n <USERXX>-vertx-kubernetes-workshop
 ----
 
 The first instruction creates the project. The 3 last instructions grant permissions in order to use all the

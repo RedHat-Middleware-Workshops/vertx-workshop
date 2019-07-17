@@ -31,6 +31,7 @@ modules:
   activate:
   - 1-preface
   - 1_1-prerequisites
+  - 1_1-settingup
   - 2-vertx
   - 3-microservices
   - 4-kubernetes
