@@ -35,6 +35,10 @@ As showin in the image below, select GIT and add the repo for this lab
 
 image::workshop-che-screenshot6.png[Creating workspace,600]
 
+[source]
+----
+git clone https://github.com/jbossdemocentral/vertx-kubernetes-workshop.git
+----
 
 Press the add button, and wait for the following dialog to appear. 
 Now open the workspace and let it load. It can take some time. Time for any questions?
