@@ -20,25 +20,7 @@ blocking ? Database accesses and more particularly JDBC! Fortunately, Vert.x pro
 
 The principle is simple (and is applied to all clients accessing blocking systems):
 
-[plantuml, database-sequence, png]
-----
-@startuml
-autonumber
-participant Application
-participant Handler
-participant Client
-control Worker
-database Database
-
-Application -> Client : The application send the query, instruction,\n statement to the client; with a Handler
-Client -> Worker : The client enqueue in a Worker the task to be done
-Client -> Application : The client returns immediately
-Worker -> Database : The worker executes the task on the database
-Worker -> Client : When done, the worker notify the client
-Client -> Handler : The client invokes the handler \n(in the same thread as the interaction (1))\n with the operation result.
-
-@enduml
-----
+image::database-sequence.png[Database sequence,600]
 
 NOTE: _Worker_ ? Yes, Vert.x has the notion of _workers_ (a separated thread pool) to execute blocking code. It can be a
  verticle marked as _worker_ or with the `vertx.executeBlocking` construct. However, even if possible, you should not

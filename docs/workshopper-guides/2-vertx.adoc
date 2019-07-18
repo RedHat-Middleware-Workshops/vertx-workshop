@@ -287,8 +287,8 @@ In this first exercise, let's start from the very beginning:
 Open the `vertx-exercises/src/main/java/io/vertx/workshop/exercise/Exercise1.java` file. Notice that this exercise is just
  a `main` method.
 
-Follow the instruction located in the class. Use your IDE to run the application (by running the `main` method). If
-your code is right, you should see a "Hello" message when you open your browser on http://localhost:8080.
+Follow the instruction located in the class. Use your IDE(Che/CodeReady) to run the application. If
+your code is right, you should see a "Hello" message when you open the preview link
 
 NOTE: Don't forget to stop the application between runs.
 
@@ -493,8 +493,8 @@ vertx.createHttpServer()
 ----
 ****
 
-Launch the exercise using the `Exercise5#main` method. Check the result by opening your browser to
-http://localhost:8080 (should display `hello world`) and http://localhost:8080?name=vert.x (should display `hello
+Launch the exercise using the `Exercise5` method. Check the result by opening the preview link in your browser to
+should display `hello world` and adding a param e.g. http://localhost:8080?name=vert.x (should display `hello
 vert.x`).
 
 This exercise shows how to compose asynchronous actions and how to use the `AsyncResult` structure. But as you can
@@ -548,8 +548,8 @@ statements containing the `reactivex` package. This package contains the _RX-ifi
 ****
 
  
-Launch the exercise using the `Exercise6#main` method. Check the result by opening your browser to
-http://localhost:8080 (should display `hello world`) and http://localhost:8080?name=vert.x (should display `hello
+Launch the exercise using the `Exercise6` method. Check the result by opening the preview link in your browser to
+should display `hello world` and adding a param e.g. http://localhost:8080?name=vert.x (should display `hello
 vert.x`).
 
 === Let's move on

@@ -17,38 +17,11 @@ We are going to cover:
 A _proxy_ is just a microservices delegating calls to another one. It may "improve" or "decorate" it, or even
 orchestrate different services. In that later case, we are closer to API gateways than plain proxies.
 
-[plantuml, proxy-sequence, png]
-----
-@startuml
-autonumber
-actor User
-participant Proxy
-participant Service
-
-User ->> Proxy : The user emits a request to the proxy
-Proxy ->> Service : The proxy delegates the actual service
-Service -->> Proxy : The service respond to the proxy
-Proxy -->> User : The proxy forward the response to the user
-
-@enduml
-----
+image::proxy-sequence.png[Proxy sequence,600]
 
 But why doing a proxy? Well, let's take the example of a flaky service:
 
-[plantuml, proxy-sequence-timeout, png]
-----
-@startuml
-autonumber
-actor User
-participant Proxy
-participant Service
-
-User ->> Proxy : The user emits a request to the proxy
-Proxy ->> Service : The proxy delegates the actual service
-Service -->x Proxy : The service rejects the request, or does not reply
-
-@enduml
-----
+image::proxy-sequence-timeout.png[Proxy sequence timeout,600]
 
 In this case, the user does not get the valid answer, may wait a long time to get an answer and so on. So, the proxy
 must contain some "resilience" logic to isolate errors and if possible provide a fallback answer.
@@ -57,25 +30,7 @@ must contain some "resilience" logic to isolate errors and if possible provide a
 
 A circuit breaker is an object monitoring an interaction, for instance the calls between our proxy and the flaky service. It starts in the _closed_ state. In this state, the circuit breaker forward the calls to the service and monitor the outcome (successes or failures). When the circuit breaker reaches an amount of failure, it switches to the _open_ state. In this state, the service is not called anymore, but a fallback response is used. After some specific time, the circuit breaker goes to the _half-open_ state and let the next request pass and hit the service. Depending on the result of this request, the circuit breaker goes back to the open state (on failure) or the closed state (on success).
 
-[plantuml, circuit-breaker-states, png]
-----
-@startuml
-[*] --> Closed
-Closed : In the closed state, requests\n are forward to the service.
-Open: The service is not called anymore,\n a fallback response is used
-state "Half-Open" as HO
-HO: The circuit breaker lets a\n request pass to check\n whether the service is back on track
-
-Closed -> Open : When the service has failed\n a couple of time
-
-Open -> HO : After some specific time,\n the circuit breaker\n switch to the half-open state
-
-
-HO -> Closed : If the request\n has been successful
-HO -> Open : If the request\n has failed
-
-@enduml
-----
+image::circuit-breaker-states.png[Circuit breaker states,600]
 
 A circuit breaker is a great way to protect your system against flaky service and also gives them time to recover when they start failing (_open_ state). When the service is back on track, and thanks to the half-open state, your system is going to auto-recover and restart using the service.
 
