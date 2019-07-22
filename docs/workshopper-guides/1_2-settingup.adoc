@@ -69,6 +69,18 @@ To make it easy following is a screen shot which also shows the link with the he
 image::workshop-che-screenshot2.png[Working with CodeReady,600]
 
 
+Run the following commands in the terminal to ensure that your environment is up and running
+
+
+[source, bash]
+----
+
+oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true -u userXX -p openshift
+
+cd vertx-kubernetes-workshop
+mvn clean install
+
+----
 
 
 
