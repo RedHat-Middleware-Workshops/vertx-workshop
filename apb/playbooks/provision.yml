@@ -9,7 +9,7 @@
     openshift_master_url: 
     openshift_user_password:
     project_suffix: "-XX"
-    github_account: sshaaf
+    github_account: jbossdemocentral
     github_ref: master
     che_generate_user_count: 10
     gogs_user_format: user%d
@@ -200,7 +200,7 @@
                 }
               },
               {
-                "commandLine": "cd ${current.project.path}/vertx-exercises && mvn clean compile && mvn exec:java -Dexec.mainClass=io.vertx.workshop.exercise.Exercise1",
+                "commandLine": "cd ${current.project.path}/ && mvn clean compile && mvn exec:java -Dexec.mainClass=io.vertx.workshop.exercise.Exercise1",
                 "name": "run Exercise1",
                 "type": "mvn",
                 "attributes": {
@@ -209,7 +209,7 @@
                 }
               },
               {
-                "commandLine": "cd ${current.project.path}/vertx-exercises && mvn clean compile && mvn exec:java -Dexec.mainClass=io.vertx.workshop.exercise.Exercise2",
+                "commandLine": "cd ${current.project.path}/ && mvn clean compile && mvn exec:java -Dexec.mainClass=io.vertx.workshop.exercise.Exercise2",
                 "name": "run Exercise2",
                 "type": "mvn",
                 "attributes": {
@@ -218,7 +218,7 @@
                 }
               },
               {
-                "commandLine": "cd ${current.project.path}/vertx-exercises && mvn clean compile && mvn exec:java -Dexec.mainClass=io.vertx.workshop.exercise.Exercise4",
+                "commandLine": "cd ${current.project.path}/ && mvn clean compile && mvn exec:java -Dexec.mainClass=io.vertx.workshop.exercise.Exercise4",
                 "name": "run Exercise4",
                 "type": "mvn",
                 "attributes": {
@@ -227,7 +227,7 @@
                 }
               },
               {
-                "commandLine": "cd ${current.project.path}/vertx-exercises && mvn clean compile && mvn exec:java -Dexec.mainClass=io.vertx.workshop.exercise.Exercise5",
+                "commandLine": "cd ${current.project.path}/ && mvn clean compile && mvn exec:java -Dexec.mainClass=io.vertx.workshop.exercise.Exercise5",
                 "name": "run Exercise5",
                 "type": "mvn",
                 "attributes": {
@@ -236,7 +236,7 @@
                 }
               },
               {
-                "commandLine": "cd ${current.project.path}/vertx-exercises && mvn clean compile && mvn exec:java -Dexec.mainClass=io.vertx.workshop.exercise.Exercise6",
+                "commandLine": "cd ${current.project.path}/ && mvn clean compile && mvn exec:java -Dexec.mainClass=io.vertx.workshop.exercise.Exercise6",
                 "name": "run Exercise6",
                 "type": "mvn",
                 "attributes": {
@@ -244,6 +244,15 @@
                   "previewUrl": "${server.8080/tcp}"
                 }
               },
+              {
+                "commandLine": "cd ${current.project.path}/ && mvn clean compile && mvn exec:java -Dexec.mainClass=io.vertx.workshop.exercise.microservice.Main",
+                "name": "run Microservices.Main",
+                "type": "mvn",
+                "attributes": {
+                  "goal": "Run",
+                  "previewUrl": "${server.8080/tcp}"
+                }
+              },              
               {
                 "commandLine": "cd ${current.project.path} && mvn clean compile && mvn fabric8:deploy",
                 "name": "fabric8:deploy",
