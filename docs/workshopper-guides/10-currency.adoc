@@ -88,6 +88,6 @@ mvn fabric8:deploy
 ----
 
 Now, in your OpenShift dashboard, click on the new route that has been created (such as `http://currency-service-proxy-vertx-kubernetes-workshop.192.168.64.17.nip.io`). Click on it and you should see the
-evaluation of your portfolio in Euros.
+evaluation of your portfolio in USD.
 
 
