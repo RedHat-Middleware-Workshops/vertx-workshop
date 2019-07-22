@@ -17,7 +17,7 @@
     <vertx.verticle>io.vertx.workshop.dashboard.DashboardVerticle</vertx.verticle>
 
     <vertx.cluster.name>vertx-cluster</vertx.cluster.name>
-    <vertx.console.version>c546f3d</vertx.console.version>
+    <vertx.console.version>ca8b2b517f</vertx.console.version>
     <frontend.directory>src/main/frontend</frontend.directory>
 
     <vertx.health.path>/health</vertx.health.path>

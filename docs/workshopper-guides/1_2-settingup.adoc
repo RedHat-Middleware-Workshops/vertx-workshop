@@ -51,6 +51,12 @@ If you are familiar with IDE (Integrated Development Environments), Che/CodeRead
 
 A few things that are specific to this lab. 
 
+Once the workspace is loaded, click on the "Project" >> "Project Update Configurations" and select project type as Maven. Press next and use the default options to finally save the project setttings. Following image shows an example.
+
+image::project-config.png[Creating workspace,800]
+
+
+
 We have created a pre-set of runners for you. to be able to run and compile the exercises. All of them can be executed by clickig the small play icon on the top bar in the Che/CodeReady. 
 Following image shows an example. 
 
@@ -61,6 +67,10 @@ Once you run your code , in many cases you want to be able to access localhost:8
 To make it easy following is a screen shot which also shows the link with the heading "preview:"
 
 image::workshop-che-screenshot2.png[Working with CodeReady,600]
+
+
+
+
 
 
 

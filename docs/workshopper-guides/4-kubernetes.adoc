@@ -97,7 +97,7 @@ We have OpenShift running, but we need a way to interact with it. The _OpenShift
 
 [source, bash]
 ----
-oc login -u userXX -p <PASSWORD>
+oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true -u userXX -p openshift
 ----
 
 
