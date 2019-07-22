@@ -8,6 +8,8 @@ import io.vertx.reactivex.core.eventbus.MessageConsumer;
 import io.vertx.reactivex.servicediscovery.ServiceDiscovery;
 import io.vertx.reactivex.servicediscovery.types.MessageSource;
 import io.vertx.workshop.portfolio.reactivex.PortfolioService;
+import io.vertx.reactivex.CompletableHelper;
+
 
 /**
  * A compulsive trader developed with RX Java 2.
