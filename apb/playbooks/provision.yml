@@ -9,7 +9,7 @@
     openshift_master_url: 
     openshift_user_password:
     project_suffix: "-XX"
-    github_account: jbossdemocentral
+    github_account: sshaaf
     github_ref: master
     che_generate_user_count: 10
     gogs_user_format: user%d
@@ -109,6 +109,7 @@
       keycloak_admin_user: "{{ infrasvcs_adm_user }}"
       keycloak_admin_pwd: "{{ infrasvcs_adm_pwd }}"
       install_java_oc_stack: false
+      che_generate_user_password: openshift
       install_custom_stacks_json: |
         [{
           "name": "Java Vert.x",
