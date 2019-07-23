@@ -6,6 +6,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.AbstractVerticle;
 import io.vertx.reactivex.core.http.HttpServer;
 import io.vertx.reactivex.core.http.HttpServerResponse;
+import io.vertx.reactivex.core.eventbus.Message;
 
 import java.util.HashMap;
 import java.util.Map;
