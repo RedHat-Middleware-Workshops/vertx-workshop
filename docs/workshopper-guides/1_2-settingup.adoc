@@ -77,14 +77,32 @@ Run the following commands in the terminal to ensure that your environment is up
 
 oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true -u <userXX> -p openshift
 
-cd vertx-kubernetes-workshop
-mvn clean install
-
 ----
 
+We are going to use a specific project to host all the microservices developed in this workshop. A `project` is a
+namespace making easy to organize your different applications in OpenShift. In a terminal run:
 
+[source, bash]
+----
+oc new-project <USERXX>-vertx-kubernetes-workshop
+oc policy add-role-to-user view admin -n <USERXX>-vertx-kubernetes-workshop
+oc policy add-role-to-user view -n <USERXX>-vertx-kubernetes-workshop -z default
+oc policy add-role-to-group view system:serviceaccounts -n <USERXX>-vertx-kubernetes-workshop
+----
 
+The first instruction creates the project. The 3 last instructions grant permissions in order to use all the
+OpenShift capabilities.
 
+In the OpenShift Web Console, you should see the newly created project. Click on it. It's empty, so let's deploy our
+first application.
+
+Lets build the source for our lab and ensure everything is in order.
+
+[source, bash]
+----
+cd vertx-kubernetes-workshop
+mvn clean install
+----
 
 
 

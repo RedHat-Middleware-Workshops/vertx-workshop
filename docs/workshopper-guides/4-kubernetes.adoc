@@ -92,35 +92,9 @@ Routes exposes a service outside of OpenShift. A route allows you to associate a
 image::openshift-entities.png[OpenShift Entities, 800]
 
 
-We have OpenShift running, but we need a way to interact with it. The _OpenShift Client_ (`oc`) is a command line
- tool to interact with OpenShift. Fortunately, this client is shipped with minishift. Run the following `oc` command to connect to your OpenShift instance:
-
-[source, bash]
-----
-oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true -u userXX -p openshift
-----
-
-
 Now, you are ready to deploy your first application.
 
 === Your first project and deployment
-
-We are going to use a specific project to host all the microservices developed in this lab. A `project` is a
-namespace making easy to organize your different applications in OpenShift. In a terminal run:
-
-[source, bash]
-----
-oc new-project <USERXX>-vertx-kubernetes-workshop
-oc policy add-role-to-user view admin -n <USERXX>-vertx-kubernetes-workshop
-oc policy add-role-to-user view -n <USERXX>-vertx-kubernetes-workshop -z default
-oc policy add-role-to-group view system:serviceaccounts -n <USERXX>-vertx-kubernetes-workshop
-----
-
-The first instruction creates the project. The 3 last instructions grant permissions in order to use all the
-OpenShift capabilities.
-
-In the OpenShift Web Console, you should see the newly created project. Click on it. It's empty, so let's deploy our
-first application.
 
 In the workshop source code, locate the `currency-3rdparty-service` and navigate to the directory in your terminal.
 Now issue the `mvn fabric8:deploy` command:
