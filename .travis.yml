@@ -5,5 +5,5 @@ jdk:
 install: true
 
 script:
-  - mvn clean test -Ptravis
-  - mvn clean test -Ptravis,solution
+  - mvn clean install test -Ptravis
+  - mvn clean install test -Ptravis,solution
