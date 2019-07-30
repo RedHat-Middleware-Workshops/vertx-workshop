@@ -1,23 +1,9 @@
-dist: trusty
-sudo: required
-language: python
-python: "2.7"
+language: java
+jdk:
+  - openjdk8
 
-services:
-  - docker
-
-before_install:
-  - docker login -u $DOCKER_USER -p $DOCKER_PASS quay.io
-
-install:
-  - pip install ansible
-  - ansible-galaxy install -r apb/requirements-travis.yml
-  - ansible-playbook apb/playbooks/provision.yml --syntax-check
+install: true
 
 script:
-  - cd apb && docker build -t openshiftlabs/vertx-workshop-apb:$TRAVIS_COMMIT .
-
-after_success:
-  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
-  - docker tag openshiftlabs/vertx-workshop-apb:$TRAVIS_COMMIT quay.io/openshiftlabs/vertx-workshop-apb:$TAG
-  - docker push quay.io/openshiftlabs/vertx-workshop-apb:$TAG
+  - mvn clean install test -Ptravis
+  - mvn clean install test -Ptravis,solution
